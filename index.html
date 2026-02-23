@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRUD Data Siswa</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+body {
+    background: linear-gradient(-45deg, #a18cd1, #fbc2eb, #8ec5fc, #e0c3fc);
+    background-size: 400% 400%;
+    animation: gradientMove 10s ease infinite;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+}
+
+.container {
+    width: 95%;
+    max-width: 1100px;
+    background: white;
+    padding: 35px;
+    border-radius: 25px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #444;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    background: #f9fafc;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.btn-simpan {
+    background: #a8c0ff;
+    color: white;
+    width: 100%;
+}
+
+.btn-edit { background: #ffd6a5; }
+.btn-hapus { background: #ffadad; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th {
+    background: #a8c0ff;
+    color: white;
+    padding: 10px;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+
+tr:hover {
+    background: #f5f7ff;
+}
+
+.lulus {
+    color: green;
+    font-weight: bold;
+}
+
+.tidak {
+    color: red;
+    font-weight: bold;
+}
+
+.summary {
+    margin-top: 15px;
+    font-weight: 600;
+    color: #444;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>CRUD Data Siswa</h2>
+
+<input type="text" id="nama" placeholder="Nama">
+<input type="text" id="kelas" placeholder="Kelas">
+<input type="number" id="tugas" placeholder="Nilai Tugas (0-100)">
+<input type="number" id="uts" placeholder="Nilai UTS (0-100)">
+<input type="number" id="uas" placeholder="Nilai UAS (0-100)">
+
+<button class="btn-simpan" onclick="simpan()">Simpan</button>
+
+<input type="text" id="search" placeholder="Cari nama siswa..." onkeyup="cari()">
+
+<div class="summary" id="rataSemua"></div>
+
+<table>
+<thead>
+<tr>
+<th>Nama</th>
+<th>Kelas</th>
+<th>Tugas</th>
+<th>UTS</th>
+<th>UAS</th>
+<th>Rata-rata</th>
+<th>Status</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody id="data"></tbody>
+</table>
+</div>
+
+<script>
+let siswa = JSON.parse(localStorage.getItem("siswa")) || [];
+let indexEdit = null;
+
+function tampil(filter = "") {
+    const body = document.getElementById("data");
+    body.innerHTML = "";
+
+    let totalRata = 0;
+    let jumlahSiswa = 0;
+
+    siswa.forEach((s, i) => {
+
+        let rata = (s.tugas + s.uts + s.uas) / 3;
+        let status = rata >= 75 ? 
+            `<span class="lulus">Lulus</span>` : 
+            `<span class="tidak">Tidak Lulus</span>`;
+
+        if (s.nama.toLowerCase().includes(filter.toLowerCase())) {
+            body.innerHTML += `
+            <tr>
+                <td>${s.nama}</td>
+                <td>${s.kelas}</td>
+                <td>${s.tugas}</td>
+                <td>${s.uts}</td>
+                <td>${s.uas}</td>
+                <td>${rata.toFixed(1)}</td>
+                <td>${status}</td>
+                <td>
+                    <button class="btn-edit" onclick="edit(${i})">Edit</button>
+                    <button class="btn-hapus" onclick="hapus(${i})">Hapus</button>
+                </td>
+            </tr>
+            `;
+        }
+
+        totalRata += rata;
+        jumlahSiswa++;
+    });
+
+    let rataKeseluruhan = jumlahSiswa > 0 ? 
+        (totalRata / jumlahSiswa).toFixed(1) : 0;
+
+    document.getElementById("rataSemua").innerHTML =
+        "Rata-rata seluruh siswa: " + rataKeseluruhan;
+
+    localStorage.setItem("siswa", JSON.stringify(siswa));
+}
+
+function validNilai(n) {
+    return n >= 0 && n <= 100;
+}
+
+function simpan() {
+    const nama = document.getElementById("nama").value.trim();
+    const kelas = document.getElementById("kelas").value.trim();
+    const tugas = parseInt(document.getElementById("tugas").value);
+    const uts = parseInt(document.getElementById("uts").value);
+    const uas = parseInt(document.getElementById("uas").value);
+
+    if (!nama || !kelas || isNaN(tugas) || isNaN(uts) || isNaN(uas)) {
+        alert("Semua data wajib diisi!");
+        return;
+    }
+
+    if (!validNilai(tugas) || !validNilai(uts) || !validNilai(uas)) {
+        alert("Nilai harus antara 0 - 100!");
+        return;
+    }
+
+    if (indexEdit === null) {
+        siswa.push({ nama, kelas, tugas, uts, uas });
+    } else {
+        siswa[indexEdit] = { nama, kelas, tugas, uts, uas };
+        indexEdit = null;
+    }
+
+    document.getElementById("nama").value = "";
+    document.getElementById("kelas").value = "";
+    document.getElementById("tugas").value = "";
+    document.getElementById("uts").value = "";
+    document.getElementById("uas").value = "";
+
+    tampil();
+}
+
+function edit(i) {
+    document.getElementById("nama").value = siswa[i].nama;
+    document.getElementById("kelas").value = siswa[i].kelas;
+    document.getElementById("tugas").value = siswa[i].tugas;
+    document.getElementById("uts").value = siswa[i].uts;
+    document.getElementById("uas").value = siswa[i].uas;
+    indexEdit = i;
+}
+
+function hapus(i) {
+    if (confirm("Hapus data ini?")) {
+        siswa.splice(i, 1);
+        tampil();
+    }
+}
+
+function cari() {
+    const keyword = document.getElementById("search").value;
+    tampil(keyword);
+}
+
+tampil();
+</script>
+
+</body>
+</html>
