@@ -104,23 +104,45 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    overflow: hidden;
+    border-radius: 15px;
 }
 
+/* header tabel */
 th {
-    background: #4facfe;
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
-    padding: 10px;
+    padding: 12px;
+    font-weight: 500;
 }
 
+/* isi tabel */
 td {
-    padding: 10px;
-    border-bottom: 1px solid #444;
+    padding: 12px;
     text-align: center;
     color: #ddd;
 }
 
+/* baris */
+tr {
+    background: #1f1f2e;
+    transition: 0.3s;
+}
+
+/* efek selang-seling */
+tr:nth-child(even) {
+    background: #26263a;
+}
+
+/* hover */
 tr:hover {
-    background: #2a2a3d;
+    background: #32324a;
+    transform: scale(1.01);
+}
+
+/* garis halus */
+td, th {
+    border-bottom: 1px solid #3a3a55;
 }
 
 .lulus {
