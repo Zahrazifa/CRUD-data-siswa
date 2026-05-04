@@ -69,7 +69,6 @@ button {
     transition: 0.3s;
 }
 
-/* tombol utama */
 .btn-simpan {
     background: linear-gradient(135deg, #667eea, #764ba2);
     width: 100%;
@@ -81,66 +80,48 @@ button {
     box-shadow: 0 6px 20px rgba(102,126,234,0.6);
 }
 
-/* tombol edit */
 .btn-edit {
     background: linear-gradient(135deg, #43cea2, #185a9d);
     box-shadow: 0 4px 12px rgba(67,206,162,0.4);
 }
 
-.btn-edit:hover {
-    transform: scale(1.05);
-}
-
-/* tombol hapus */
 .btn-hapus {
     background: linear-gradient(135deg, #ff416c, #ff4b2b);
     box-shadow: 0 4px 12px rgba(255,65,108,0.4);
 }
 
-.btn-hapus:hover {
-    transform: scale(1.05);
-}
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    overflow: hidden;
     border-radius: 15px;
+    overflow: hidden;
 }
 
-/* header tabel */
 th {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
     padding: 12px;
-    font-weight: 500;
 }
 
-/* isi tabel */
 td {
     padding: 12px;
     text-align: center;
     color: #ddd;
 }
 
-/* baris */
 tr {
     background: #1f1f2e;
-    transition: 0.3s;
 }
 
-/* efek selang-seling */
 tr:nth-child(even) {
     background: #26263a;
 }
 
-/* hover */
 tr:hover {
     background: #32324a;
-    transform: scale(1.01);
 }
 
-/* garis halus */
 td, th {
     border-bottom: 1px solid #3a3a55;
 }
@@ -162,6 +143,7 @@ td, th {
 }
 </style>
 </head>
+
 <body>
 
 <div class="container">
@@ -169,9 +151,7 @@ td, th {
 
 <input type="text" id="nama" placeholder="Nama">
 <input type="text" id="kelas" placeholder="Kelas">
-<input type="number" id="tugas" placeholder="Nilai Tugas (0-100)">
-<input type="number" id="uts" placeholder="Nilai UTS (0-100)">
-<input type="number" id="uas" placeholder="Nilai UAS (0-100)">
+<input type="number" id="nilai" placeholder="Nilai (0-100)">
 
 <button class="btn-simpan" onclick="simpan()">Simpan</button>
 
@@ -184,10 +164,7 @@ td, th {
 <tr>
 <th>Nama</th>
 <th>Kelas</th>
-<th>Tugas</th>
-<th>UTS</th>
-<th>UAS</th>
-<th>Rata-rata</th>
+<th>Nilai</th>
 <th>Status</th>
 <th>Aksi</th>
 </tr>
@@ -204,25 +181,21 @@ function tampil(filter = "") {
     const body = document.getElementById("data");
     body.innerHTML = "";
 
-    let totalRata = 0;
+    let totalNilai = 0;
     let jumlahSiswa = 0;
 
     siswa.forEach((s, i) => {
 
-        let rata = (s.tugas + s.uts + s.uas) / 3;
-        let status = rata >= 75 ? 
-            `<span class="lulus">Lulus</span>` : 
-            `<span class="tidak">Tidak Lulus</span>`;
+        let status = s.nilai >= 75 
+            ? '<span class="lulus">Lulus</span>' 
+            : '<span class="tidak">Tidak Lulus</span>';
 
         if (s.nama.toLowerCase().includes(filter.toLowerCase())) {
             body.innerHTML += `
             <tr>
                 <td>${s.nama}</td>
                 <td>${s.kelas}</td>
-                <td>${s.tugas}</td>
-                <td>${s.uts}</td>
-                <td>${s.uas}</td>
-                <td>${rata.toFixed(1)}</td>
+                <td>${s.nilai}</td>
                 <td>${status}</td>
                 <td>
                     <button class="btn-edit" onclick="edit(${i})">Edit</button>
@@ -232,15 +205,14 @@ function tampil(filter = "") {
             `;
         }
 
-        totalRata += rata;
+        totalNilai += s.nilai;
         jumlahSiswa++;
     });
 
-    let rataKeseluruhan = jumlahSiswa > 0 ? 
-        (totalRata / jumlahSiswa).toFixed(1) : 0;
+    let rata = jumlahSiswa > 0 ? (totalNilai / jumlahSiswa).toFixed(1) : 0;
 
     document.getElementById("rataSemua").innerHTML =
-        "Rata-rata seluruh siswa: " + rataKeseluruhan;
+        "Rata-rata seluruh siswa: " + rata;
 
     localStorage.setItem("siswa", JSON.stringify(siswa));
 }
@@ -252,32 +224,28 @@ function validNilai(n) {
 function simpan() {
     const nama = document.getElementById("nama").value.trim();
     const kelas = document.getElementById("kelas").value.trim();
-    const tugas = parseInt(document.getElementById("tugas").value);
-    const uts = parseInt(document.getElementById("uts").value);
-    const uas = parseInt(document.getElementById("uas").value);
+    const nilai = parseInt(document.getElementById("nilai").value);
 
-    if (!nama || !kelas || isNaN(tugas) || isNaN(uts) || isNaN(uas)) {
+    if (!nama || !kelas || isNaN(nilai)) {
         alert("Semua data wajib diisi!");
         return;
     }
 
-    if (!validNilai(tugas) || !validNilai(uts) || !validNilai(uas)) {
+    if (!validNilai(nilai)) {
         alert("Nilai harus antara 0 - 100!");
         return;
     }
 
     if (indexEdit === null) {
-        siswa.push({ nama, kelas, tugas, uts, uas });
+        siswa.push({ nama, kelas, nilai });
     } else {
-        siswa[indexEdit] = { nama, kelas, tugas, uts, uas };
+        siswa[indexEdit] = { nama, kelas, nilai };
         indexEdit = null;
     }
 
     document.getElementById("nama").value = "";
     document.getElementById("kelas").value = "";
-    document.getElementById("tugas").value = "";
-    document.getElementById("uts").value = "";
-    document.getElementById("uas").value = "";
+    document.getElementById("nilai").value = "";
 
     tampil();
 }
@@ -285,9 +253,7 @@ function simpan() {
 function edit(i) {
     document.getElementById("nama").value = siswa[i].nama;
     document.getElementById("kelas").value = siswa[i].kelas;
-    document.getElementById("tugas").value = siswa[i].tugas;
-    document.getElementById("uts").value = siswa[i].uts;
-    document.getElementById("uas").value = siswa[i].uas;
+    document.getElementById("nilai").value = siswa[i].nilai;
     indexEdit = i;
 }
 
