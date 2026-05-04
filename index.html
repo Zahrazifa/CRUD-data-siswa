@@ -72,22 +72,14 @@ button {
 .btn-simpan {
     background: linear-gradient(135deg, #667eea, #764ba2);
     width: 100%;
-    box-shadow: 0 4px 15px rgba(102,126,234,0.4);
-}
-
-.btn-simpan:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102,126,234,0.6);
 }
 
 .btn-edit {
     background: linear-gradient(135deg, #43cea2, #185a9d);
-    box-shadow: 0 4px 12px rgba(67,206,162,0.4);
 }
 
 .btn-hapus {
     background: linear-gradient(135deg, #ff416c, #ff4b2b);
-    box-shadow: 0 4px 12px rgba(255,65,108,0.4);
 }
 
 table {
@@ -226,16 +218,31 @@ function simpan() {
     const kelas = document.getElementById("kelas").value.trim();
     const nilai = parseInt(document.getElementById("nilai").value);
 
+    // VALIDASI KOSONG
     if (!nama || !kelas || isNaN(nilai)) {
         alert("Semua data wajib diisi!");
         return;
     }
 
+    // VALIDASI NILAI
     if (!validNilai(nilai)) {
         alert("Nilai harus antara 0 - 100!");
         return;
     }
 
+    // 🔥 VALIDASI DUPLIKAT
+    let duplikat = siswa.some((s, i) => {
+        return s.nama.toLowerCase() === nama.toLowerCase() &&
+               s.kelas.toLowerCase() === kelas.toLowerCase() &&
+               i !== indexEdit;
+    });
+
+    if (duplikat) {
+        alert("Data siswa sudah ada!");
+        return;
+    }
+
+    // SIMPAN / UPDATE
     if (indexEdit === null) {
         siswa.push({ nama, kelas, nilai });
     } else {
@@ -243,6 +250,7 @@ function simpan() {
         indexEdit = null;
     }
 
+    // RESET INPUT
     document.getElementById("nama").value = "";
     document.getElementById("kelas").value = "";
     document.getElementById("nilai").value = "";
