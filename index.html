@@ -64,17 +64,42 @@ button {
     border-radius: 20px;
     cursor: pointer;
     margin-top: 8px;
-    color: white;
+    color: #fff;
+    font-weight: 500;
+    transition: 0.3s;
 }
 
+/* tombol utama */
 .btn-simpan {
-    background: #4facfe;
+    background: linear-gradient(135deg, #667eea, #764ba2);
     width: 100%;
+    box-shadow: 0 4px 15px rgba(102,126,234,0.4);
 }
 
-.btn-edit { background: #f6b93b; }
-.btn-hapus { background: #e55039; }
+.btn-simpan:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102,126,234,0.6);
+}
 
+/* tombol edit */
+.btn-edit {
+    background: linear-gradient(135deg, #43cea2, #185a9d);
+    box-shadow: 0 4px 12px rgba(67,206,162,0.4);
+}
+
+.btn-edit:hover {
+    transform: scale(1.05);
+}
+
+/* tombol hapus */
+.btn-hapus {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    box-shadow: 0 4px 12px rgba(255,65,108,0.4);
+}
+
+.btn-hapus:hover {
+    transform: scale(1.05);
+}
 table {
     width: 100%;
     border-collapse: collapse;
