@@ -12,8 +12,9 @@
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
 }
+
 body {
-    background: linear-gradient(-45deg, #a18cd1, #fbc2eb, #8ec5fc, #e0c3fc);
+    background: linear-gradient(-45deg, #141e30, #243b55, #0f2027, #2c5364);
     background-size: 400% 400%;
     animation: gradientMove 10s ease infinite;
     min-height: 100vh;
@@ -23,31 +24,24 @@ body {
 }
 
 @keyframes gradientMove {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .container {
     width: 95%;
     max-width: 1100px;
-    background: white;
+    background: #1e1e2f;
     padding: 35px;
     border-radius: 25px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
 }
 
 h2 {
     text-align: center;
     margin-bottom: 20px;
-    color: #444;
+    color: #f1f1f1;
 }
 
 input {
@@ -55,8 +49,13 @@ input {
     padding: 10px;
     margin: 6px 0;
     border-radius: 12px;
-    border: 1px solid #ddd;
-    background: #f9fafc;
+    border: 1px solid #444;
+    background: #2c2c3e;
+    color: #fff;
+}
+
+input::placeholder {
+    color: #aaa;
 }
 
 button {
@@ -65,16 +64,16 @@ button {
     border-radius: 20px;
     cursor: pointer;
     margin-top: 8px;
+    color: white;
 }
 
 .btn-simpan {
-    background: #a8c0ff;
-    color: white;
+    background: #4facfe;
     width: 100%;
 }
 
-.btn-edit { background: #ffd6a5; }
-.btn-hapus { background: #ffadad; }
+.btn-edit { background: #f6b93b; }
+.btn-hapus { background: #e55039; }
 
 table {
     width: 100%;
@@ -83,35 +82,36 @@ table {
 }
 
 th {
-    background: #a8c0ff;
+    background: #4facfe;
     color: white;
     padding: 10px;
 }
 
 td {
     padding: 10px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #444;
     text-align: center;
+    color: #ddd;
 }
 
 tr:hover {
-    background: #f5f7ff;
+    background: #2a2a3d;
 }
 
 .lulus {
-    color: green;
+    color: #2ecc71;
     font-weight: bold;
 }
 
 .tidak {
-    color: red;
+    color: #e74c3c;
     font-weight: bold;
 }
 
 .summary {
     margin-top: 15px;
     font-weight: 600;
-    color: #444;
+    color: #ccc;
 }
 </style>
 </head>
